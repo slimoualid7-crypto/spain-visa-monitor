@@ -5,7 +5,7 @@ import requests
 from flask import Flask
 from playwright.sync_api import sync_playwright
 
-app = Flask(_name_)
+app = Flask(__name__)
 
 # --- بيانات البوت ---
 TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEshI2RwJEcB1g0nhlD8iEw"
@@ -54,6 +54,6 @@ t.start()
 def home():
     return "Spain Visa Bot is Running 24/7!"
 
-if _name_ == '_main_':
+if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
