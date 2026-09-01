@@ -8,7 +8,7 @@ from playwright.sync_api import sync_playwright
 app = Flask(__name__)
 
 # --- بيانات البوت ---
-TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEshI2RwJEcB1g0nhlD8iEw"
+TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEShi2RwJEcBlq0nhldBiEw"
 TELEGRAM_CHAT_ID = "8274522042"
 BLS_URL = "https://algeria.blsspainvisa.com/"
 
