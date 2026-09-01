@@ -7,8 +7,8 @@ from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
 
-# --- بيانات بوت إسبانيا الجديد ---
-TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEShi2RwJEcBlq0nhldBiEw"
+# --- بيانات بوت إسبانيا ---
+TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEshI2RwJEcB1g0nhlD8iEw"
 TELEGRAM_CHAT_ID = "8274522042"
 BLS_URL = "https://algeria.blsspainvisa.com/"
 
@@ -16,9 +16,11 @@ def send_telegram(message):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message}
     try:
-        requests.post(url, data=payload)
+        # استخدام json=payload بدلاً من data=payload لتفادي رفض تيليجرام للطلب
+        response = requests.post(url, json=payload, timeout=10)
+        print(f"استجابة تيليجرام: {response.status_code} - {response.text}")
     except Exception as e:
-        print(f"خطأ تيليجرام: {e}")
+        print(f"خطأ أثناء إرسال رسالة تيليجرام: {e}")
 
 def check_spain_appointments():
     with sync_playwright() as p:
@@ -32,28 +34,29 @@ def check_spain_appointments():
             page.goto(BLS_URL, timeout=60000)
             page.wait_for_timeout(3000)
 
-            # فحص المواعيد المتاحة
+            # البحث عن عناصر المواعيد المتاحة في موقع BLS
             available_slots = page.query_selector_all('.day:not(.disabled), .appointment-slot:not(.booked)')
 
             if len(available_slots) > 0:
                 send_telegram("🚨 عاجل ومؤكد: تم العثور على موعد متاح الآن في موقع BLS إسبانيا! ادخل واحجز فوراً.")
         except Exception as e:
-            print(f"خطأ أثناء الفحص: {e}")
+            print(f"خطأ أثناء فحص مواعيد إسبانيا: {e}")
         finally:
             browser.close()
 
 def run_loop():
+    # إرسال رسالة الترحيب والبدء عند تشغيل السكريبت
     send_telegram("✅ تم تشغيل سكريبت مراقبة مواعيد إسبانيا بنجاح على Render (24/7)!")
     while True:
         check_spain_appointments()
-        time.sleep(900)  # إعادة الفحص كل 15 دقيقة
+        time.sleep(900)  # إعادة الفحص كل 15 دقيقة (900 ثانية)
 
 @app.route('/')
 def home():
     return "Spain Visa Bot is Running 24/7!"
 
 if __name__ == '__main__':
-    # تشغيل الفحص في خلفية خادم Flask لربط المنفذ والحفاظ على الخدمة حية 24/7
+    # تشغيل حلقات المراقبة في خلفية خادم Flask
     t = threading.Thread(target=run_loop)
     t.daemon = True
     t.start()
