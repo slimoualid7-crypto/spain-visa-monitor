@@ -5,7 +5,7 @@ import requests
 from flask import Flask
 from playwright.sync_api import sync_playwright
 
-app = Flask(__name__)
+app = Flask(_name_)
 
 # --- بيانات البوت ---
 TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEshI2RwJEcB1g0nhlD8iEw"
@@ -40,19 +40,12 @@ def check_spain_appointments():
         print(f"Playwright Check Error: {e}")
 
 def run_loop():
-    # إرسال رسالة الترحيب فور تشغيل السلسلة
     send_telegram("✅ تم تشغيل سكريبت مراقبة مواعيد إسبانيا بنجاح على Render (24/7)!")
     while True:
         check_spain_appointments()
         time.sleep(900)
 
-# تشغيل الفحص في الخلفية عند بدء Flask
-@app.before_first_request
-def initialize():
-    t = threading.Thread(target=run_loop)
-    t.start()
-
-# تشغيل الاحتياطي لـ Gunicorn
+# تشغيل الـ Thread المباشر عند استدعاء التطبيق
 t = threading.Thread(target=run_loop)
 t.daemon = True
 t.start()
@@ -61,6 +54,6 @@ t.start()
 def home():
     return "Spain Visa Bot is Running 24/7!"
 
-if __name__ == '__main__':
+if _name_ == '_main_':
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
