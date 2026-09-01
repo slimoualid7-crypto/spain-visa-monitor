@@ -7,7 +7,7 @@ from playwright.sync_api import sync_playwright
 
 app = Flask(__name__)
 
-# --- بيانات البوت ---
+# ضع التوكن الجديد الصحيح هنا
 TELEGRAM_TOKEN = "8985660641:AAEYNMhKxqt3ZEShi2RwJEcBlq0nhldBiEw"
 TELEGRAM_CHAT_ID = "8274522042"
 BLS_URL = "https://algeria.blsspainvisa.com/"
@@ -45,7 +45,6 @@ def run_loop():
         check_spain_appointments()
         time.sleep(900)
 
-# تشغيل الـ Thread المباشر عند استدعاء التطبيق
 t = threading.Thread(target=run_loop)
 t.daemon = True
 t.start()
